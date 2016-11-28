@@ -1,11 +1,19 @@
 ﻿var Grid = React.createClass({
-    render: function() {
+
+    getInitialState: function() {
+        return { Columns: [{ Name: "Column1" }, { Name: "Column2" }] };
+    },
+    render: function () {
+        var columns = this.state.Columns.map(function (item) {
+            return (<th>{item.Name}</th>)
+        })
+
         return (
           <div className="table-responsive">
             <table className="table table-bordered table-striped">
                 <thead>
                     <tr>
-                    <th>Column1</th><th>Column2</th>
+                    {columns}
                 </tr>
                 </thead>
                 <tbody>
