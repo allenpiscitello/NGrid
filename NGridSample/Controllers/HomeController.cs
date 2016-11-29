@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-namespace NGridSample.Controllers
+﻿namespace NGridSample.Controllers
 {
-    using Shared;
+    using System.Threading.Tasks;
+    using Features;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
 
 
     public class HomeController : Controller
     {
-        private readonly ApiContext _context;
+        private readonly IMediator _mediator;
 
-        public HomeController(ApiContext context)
+        public HomeController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
 
         public IActionResult Index()
@@ -23,16 +21,10 @@ namespace NGridSample.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetData()
+        public async Task<JsonResult> GetData()
         {
-            var data = _context.Items;
-
-            var columns = new object[] {new {Name= "Column1"}, new {Name="Column2"}};
-            return Json(new
-            {
-                Columns = columns,
-                Data = data
-            });
+            var result = await _mediator.SendAsync(new FetchDataQuery());
+            return Json(result);
         }
 
         public IActionResult Error()

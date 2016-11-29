@@ -1,17 +1,22 @@
 ﻿namespace NGridSample
 {
+    using System;
+    using System.Collections.Generic;
+    using Features;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using HtmlTags;
+    using MediatR;
     using Shared.Tags;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Models;
     using React.AspNet;
     using Shared;
+    using Scrutor;
 
     public class Startup
     {
@@ -36,6 +41,14 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<SingleInstanceFactory>(p => t => p.GetRequiredService(t));
+            services.AddScoped<MultiInstanceFactory>(p => t => p.GetRequiredServices(t));
+
+            services.Scan(scan => scan
+                .FromAssembliesOf(typeof(IMediator), typeof(FetchDataQuery))
+                .AddClasses()
+                .AsImplementedInterfaces());
+            
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -94,6 +107,7 @@
             var context = app.ApplicationServices.GetService<ApiContext>();
             AddTestData(context);
 
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -120,4 +134,15 @@
             context.Set<SampleItem>().Add(testItem);
         }
     }
+
+    public static class MediatRExtensions
+    {
+        public static IEnumerable<object> GetRequiredServices(this IServiceProvider provider, Type serviceType)
+        {
+            return (IEnumerable<object>)provider.GetRequiredService(typeof(IEnumerable<>).MakeGenericType(serviceType));
+        }
+
+
+    }
+
 }

@@ -25,7 +25,9 @@
     "HtmlTags.AspNetCore": "4.2.0",
     "React.AspNet": "3.0.0",
     "Microsoft.EntityFrameworkCore": "1.0.0",
-    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0"
+    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0",
+    "MediatR": "2.1.0",
+    "Scrutor": "1.10.0"
   },
 
   "tools": {
