@@ -13,6 +13,18 @@ namespace NGridSample.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult GetData()
+        {
+            var columns = new object[] {new {Name= "Column1"}, new {Name="Column2"}};
+            var data = new object[] {};
+            return Json(new
+            {
+                Columns = columns,
+                Data = data
+            });
+        }
+
         public IActionResult Error()
         {
             return View();

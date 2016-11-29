@@ -1,21 +1,30 @@
 ﻿var Grid = React.createClass({
 
-    getInitialState: function() {
+    getInitialState: function () {
+
         return {
-            Columns: [{ Name: "Column1" }, { Name: "Column2" }],
-            Data: [{ Column1: "Item 1", Column2: "Item 2" }, { Column1: "Item 3", Column2: "Item 4" }]
+            columns: [],
+            data: []
         };
     },
+
+
+    componentDidMount: function () {
+
+        this.serverRequest = $.post({ url: "/Home/GetData" }).success(function (result) {
+            this.setState(result);
+        }.bind(this));
+    },
     render: function () {
-        var columns = this.state.Columns.map(function (item, index) {
-            return (<th key={index}>{item.Name}</th>)
+        var columns = this.state.columns.map(function (item, index) {
+            return (<th key={index}>{item.name}</th>)
         });
 
-        var columnData = this.state.Columns;
+        var columnData = this.state.columns;
 
-        var rows = this.state.Data.map(function (item, index) {
+        var rows = this.state.data.map(function (item, index) {
             var cols = columnData.map(function (col, index) {
-                return (<td key={index}>{item[col.Name]}</td>)
+                return (<td key={index}>{item[col.name]}</td>)
             });
             return (<tr key={index}>{cols}</tr>)
         });
