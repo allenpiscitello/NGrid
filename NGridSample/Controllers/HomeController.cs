@@ -2,12 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
 namespace NGridSample.Controllers
 {
+    using Shared;
+    using Microsoft.AspNetCore.Mvc;
+
+
     public class HomeController : Controller
     {
+        private readonly ApiContext _context;
+
+        public HomeController(ApiContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -16,8 +25,9 @@ namespace NGridSample.Controllers
         [HttpPost]
         public JsonResult GetData()
         {
+            var data = _context.Items;
+
             var columns = new object[] {new {Name= "Column1"}, new {Name="Column2"}};
-            var data = new object[] {};
             return Json(new
             {
                 Columns = columns,

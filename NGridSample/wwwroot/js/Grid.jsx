@@ -8,7 +8,6 @@
         };
     },
 
-
     componentDidMount: function () {
 
         this.serverRequest = $.post({ url: "/Home/GetData" }).success(function (result) {
@@ -24,7 +23,7 @@
 
         var rows = this.state.data.map(function (item, index) {
             var cols = columnData.map(function (col, index) {
-                return (<td key={index}>{item[col.name]}</td>)
+                return (<td key={index}>{item[col.name.toLowerCase()]}</td>)
             });
             return (<tr key={index}>{cols}</tr>)
         });

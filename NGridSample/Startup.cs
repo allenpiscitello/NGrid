@@ -8,7 +8,10 @@
     using HtmlTags;
     using Shared.Tags;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
+    using Models;
     using React.AspNet;
+    using Shared;
 
     public class Startup
     {
@@ -40,6 +43,8 @@
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddReact();
+            
+            services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase());
 
             services.AddMvc();
         }
@@ -86,12 +91,33 @@
             
             app.UseStaticFiles();
 
+            var context = app.ApplicationServices.GetService<ApiContext>();
+            AddTestData(context);
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private static void AddTestData(ApiContext context)
+        {
+            AddItem(context, "ABC", 123);
+            AddItem(context, "DEF", 456);
+            context.SaveChanges();
+        }
+
+        private static void AddItem(ApiContext context, string column1, int column2)
+        {
+            var testItem = new SampleItem
+            {
+                Column1 = column1,
+                Column2 = column2
+            };
+
+            context.Set<SampleItem>().Add(testItem);
         }
     }
 }
