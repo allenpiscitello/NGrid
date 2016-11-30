@@ -20,9 +20,9 @@
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetData()
+        public async Task<JsonResult> GetData(FetchData.FetchDataQuery query)
         {
-            var result = await _mediator.SendAsync(new FetchData.FetchDataQuery());
+            var result = await _mediator.SendAsync(query);
             return Json(result);
         }
 

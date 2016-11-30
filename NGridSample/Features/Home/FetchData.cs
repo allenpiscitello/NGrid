@@ -1,5 +1,6 @@
 ﻿namespace NGridSample.Features.Grid
 {
+    using System;
     using System.Threading.Tasks;
     using Infrastructure;
     using MediatR;
@@ -7,9 +8,15 @@
 
     public class FetchData
     {
+        public class SortOption
+        {
+            public string Column { get; set; }
+            public bool SortDesc { get; set; }
+        }
 
         public class FetchDataQuery : IAsyncRequest<object>
         {
+            public SortOption[] ColumnsToSort { get; set; }
         }
 
         public class FetchDataResult : IAsyncRequestHandler<FetchDataQuery, object>
