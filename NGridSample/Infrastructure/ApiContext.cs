@@ -1,7 +1,7 @@
-﻿namespace NGridSample.Shared
+﻿namespace NGridSample.Infrastructure
 {
     using Microsoft.EntityFrameworkCore;
-    using Models;
+    using Domain;
 
     public class ApiContext : DbContext
     {

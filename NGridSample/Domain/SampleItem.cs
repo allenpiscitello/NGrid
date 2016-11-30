@@ -1,4 +1,4 @@
-﻿namespace NGridSample.Models
+﻿namespace NGridSample.Domain
 {
     public class SampleItem
     {

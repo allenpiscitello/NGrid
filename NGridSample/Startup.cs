@@ -2,18 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
-    using Features;
+    using Domain;
+    using Features.Grid;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using HtmlTags;
+    using Infrastructure;
     using MediatR;
     using Shared.Tags;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
-    using Models;
     using React.AspNet;
     using Shared;
     using Scrutor;
@@ -45,10 +46,10 @@
             services.AddScoped<MultiInstanceFactory>(p => t => p.GetRequiredServices(t));
 
             services.Scan(scan => scan
-                .FromAssembliesOf(typeof(IMediator), typeof(FetchDataQuery))
+                .FromAssembliesOf(typeof (IMediator), typeof (FetchData.FetchDataQuery))
                 .AddClasses()
                 .AsImplementedInterfaces());
-            
+
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -56,10 +57,25 @@
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddReact();
-            
+
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase());
 
-            services.AddMvc();
+            services.AddMvc(opt => {
+                                       opt.Conventions.Add(new FeatureConvention());
+            })
+                .AddRazorOptions(options =>
+                {
+                    // {0} - Action Name
+                    // {1} - Controller Name
+                    // {2} - Area Name
+                    // {3} - Feature Name
+                    // Replace normal view location entirely
+                    options.ViewLocationFormats.Clear();
+                    options.ViewLocationFormats.Add("/Features/{3}/{1}/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Features/{3}/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Features/Shared/{0}.cshtml");
+                    options.ViewLocationExpanders.Add(new FeatureViewLocationExpander());
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,10 +1,9 @@
-﻿namespace NGridSample.Controllers
+﻿namespace NGridSample.Features.Home
 {
     using System.Threading.Tasks;
-    using Features;
+    using Grid;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
-
 
     public class HomeController : Controller
     {
@@ -23,7 +22,7 @@
         [HttpPost]
         public async Task<JsonResult> GetData()
         {
-            var result = await _mediator.SendAsync(new FetchDataQuery());
+            var result = await _mediator.SendAsync(new FetchData.FetchDataQuery());
             return Json(result);
         }
 
