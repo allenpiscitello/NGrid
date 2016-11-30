@@ -1,10 +1,18 @@
-﻿var Grid = React.createClass({
+﻿var GridHeader = React.createClass({
+
+    render: function () {
+        return (<th>{this.props.name}</th>)
+    }
+});
+
+var Grid = React.createClass({
 
     getInitialState: function () {
 
         return {
             columns: [],
-            data: []
+            data: [],
+            sortColumns: []
         };
     },
 
@@ -16,7 +24,7 @@
     },
     render: function () {
         var columns = this.state.columns.map(function (item, index) {
-            return (<th key={index}>{item.name}</th>)
+            return (<GridHeader key={index} name={item.name}/>)
         });
 
         var columnData = this.state.columns;
