@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Domain;
     using Infrastructure;
@@ -74,7 +75,8 @@
             public async Task<FetchDataResult<T>> Handle(FetchDataQuery<T> message)
             {
                 IQueryable<T> data = Dataset;
-                var columns = new [] {new Column { Name = "Column1", Sorted=false, SortedDesc=false}, new Column { Name = "Column2", Sorted = false, SortedDesc = false } };
+
+                var columns = typeof (T).GetProperties().Select(x => new Column {Name = x.Name}).ToArray();
 
                 if (message?.SortColumns != null)
                 {
