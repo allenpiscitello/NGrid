@@ -29,7 +29,7 @@
         {
             public SortOption[] SortColumns { get; set; }
         }
-        
+
         public class FetchDataResult<T>
         {
             public Column[] Columns { get; set; }
@@ -38,21 +38,21 @@
 
         public class FetchDataHandlerSampleItem : FetchDataHandler<SampleItem>
         {
-            public FetchDataHandlerSampleItem(ApiContext context) : base(context)
-            {
-            }
-        }
-
-
-
-        public class FetchDataHandler<T> : IAsyncRequestHandler<FetchDataQuery<T>, FetchDataResult<T>> where T : class
-        {
             private readonly ApiContext _context;
 
-            public FetchDataHandler(ApiContext context)
+            public FetchDataHandlerSampleItem(ApiContext context)
             {
                 _context = context;
             }
+
+            protected override IQueryable<SampleItem> Dataset => _context.Set<SampleItem>();
+        }
+
+        public abstract class FetchDataHandler<T> : IAsyncRequestHandler<FetchDataQuery<T>, FetchDataResult<T>> where T : class
+        {
+
+            protected abstract IQueryable<T> Dataset { get; }
+
 
             private Expression<Func<T, object>> GetPropertySelector(string propertyName)
             {
@@ -65,7 +65,7 @@
 
             public async Task<FetchDataResult<T>> Handle(FetchDataQuery<T> message)
             {
-                IQueryable<T> data = _context.Set<T>();
+                IQueryable<T> data = Dataset;
                 var columns = new [] {new Column { Name = "Column1", Sorted=false, SortedDesc=false}, new Column { Name = "Column2", Sorted = false, SortedDesc = false } };
 
                 if (message?.SortColumns != null)
