@@ -1,4 +1,4 @@
-﻿namespace NGridSample.Features.Grid
+﻿namespace NGridSample.Features.Home
 {
     using System;
     using System.Linq;
@@ -25,21 +25,36 @@
         }
 
 
-        public class FetchDataQuery : IAsyncRequest<object>
+        public class FetchDataQuery<T> : IAsyncRequest<FetchDataResult<T>> where T : class
         {
             public SortOption[] SortColumns { get; set; }
         }
+        
+        public class FetchDataResult<T>
+        {
+            public Column[] Columns { get; set; }
+            public T[] Data { get; set; }
+        }
 
-        public class FetchDataResult : IAsyncRequestHandler<FetchDataQuery, object>
+        public class FetchDataHandlerSampleItem : FetchDataHandler<SampleItem>
+        {
+            public FetchDataHandlerSampleItem(ApiContext context) : base(context)
+            {
+            }
+        }
+
+
+
+        public class FetchDataHandler<T> : IAsyncRequestHandler<FetchDataQuery<T>, FetchDataResult<T>> where T : class
         {
             private readonly ApiContext _context;
 
-            public FetchDataResult(ApiContext context)
+            public FetchDataHandler(ApiContext context)
             {
                 _context = context;
             }
 
-            private Expression<Func<T, object>> GetPropertySelector<T>(string propertyName)
+            private Expression<Func<T, object>> GetPropertySelector(string propertyName)
             {
                 var arg = Expression.Parameter(typeof (T), "x");
                 var property = Expression.Property(arg, propertyName);
@@ -48,9 +63,9 @@
                 return exp;
             }
 
-            public async Task<object> Handle(FetchDataQuery message)
+            public async Task<FetchDataResult<T>> Handle(FetchDataQuery<T> message)
             {
-                IQueryable<SampleItem> data = _context.Items;
+                IQueryable<T> data = _context.Set<T>();
                 var columns = new [] {new Column { Name = "Column1", Sorted=false, SortedDesc=false}, new Column { Name = "Column2", Sorted = false, SortedDesc = false } };
 
                 if (message?.SortColumns != null)
@@ -59,19 +74,18 @@
                     {
                         var column = columns.Single(x => x.Name == sortColumn.Column);
                         column.Sorted = true;
-
-
+                        
                         column.SortedDesc = sortColumn.SortDesc;
                         data = sortColumn.SortDesc
-                            ? data.OrderByDescending(GetPropertySelector<SampleItem>(column.Name))
-                            : data.OrderBy(GetPropertySelector<SampleItem>(column.Name));
+                            ? data.OrderByDescending(GetPropertySelector(column.Name))
+                            : data.OrderBy(GetPropertySelector(column.Name));
                     }
                 }
 
-                return new
+                return new FetchDataResult<T>
                 {
                     Columns = columns,
-                    Data = await data.ToListAsync()
+                    Data = await data.ToArrayAsync()
                 };
             }
         }

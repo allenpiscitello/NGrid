@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Domain;
-    using Features.Grid;
+    using Features.Home;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -46,7 +46,7 @@
             services.AddScoped<MultiInstanceFactory>(p => t => p.GetRequiredServices(t));
 
             services.Scan(scan => scan
-                .FromAssembliesOf(typeof (IMediator), typeof (FetchData.FetchDataQuery))
+                .FromAssembliesOf(typeof (IMediator), typeof (FetchData.FetchDataQuery<SampleItem>))
                 .AddClasses()
                 .AsImplementedInterfaces());
 
