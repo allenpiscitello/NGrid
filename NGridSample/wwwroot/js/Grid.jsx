@@ -1,8 +1,19 @@
 ﻿var GridHeader = React.createClass({
 
     render: function () {
-        return (<th>{this.props.name}</th>)
-    }
+        if (this.props.sorted) {
+            if (this.props.sortedDesc) {
+                var sortIcon = "glyphicon glyphicon-sort-by-attributes-alt pull-right";
+            }
+            else {
+                var sortIcon = "glyphicon glyphicon-sort-by-attributes pull-right";
+            }
+        }
+        else {
+            var sortIcon = "glyphicon glyphicon-sort pull-right";
+        }
+        return (<th>{this.props.name}<span className={sortIcon} aria-hidden="true" /></th>)
+}
 });
 
 var Grid = React.createClass({
@@ -24,7 +35,7 @@ var Grid = React.createClass({
     },
     render: function () {
         var columns = this.state.columns.map(function (item, index) {
-            return (<GridHeader key={index} name={item.name}/>)
+            return (<GridHeader key={index} name={item.name} sorted={item.sorted } sortedDesc={item.sortedDesc}/>)
         });
 
         var columnData = this.state.columns;

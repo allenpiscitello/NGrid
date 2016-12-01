@@ -32,7 +32,7 @@
             {
                 var data = await _context.Items.ToListAsync();
 
-                var columns = new object[] {new {Name = "Column1"}, new {Name = "Column2"}};
+                var columns = new object[] {new {Name = "Column1", Sorted=true, SortedDesc=true}, new {Name = "Column2", Sorted = true, SortedDesc = false } };
                 return new
                 {
                     Columns = columns,
