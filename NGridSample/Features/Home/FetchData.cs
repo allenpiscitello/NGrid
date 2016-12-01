@@ -23,8 +23,7 @@
             public bool Sorted { get; set; }
             public bool SortedDesc { get; set; }
         }
-
-
+        
         public class FetchDataQuery<T> : IAsyncRequest<FetchDataResult<T>> where T : class
         {
             public SortOption[] SortColumns { get; set; }
@@ -36,16 +35,25 @@
             public T[] Data { get; set; }
         }
 
-        public class FetchDataHandlerSampleItem : FetchDataHandler<SampleItem>
+        public abstract class DbContextHandler<T> : FetchDataHandler<T> where T : class
         {
-            private readonly ApiContext _context;
+            private readonly DbContext _context;
 
-            public FetchDataHandlerSampleItem(ApiContext context)
+            protected DbContextHandler(DbContext context)
             {
                 _context = context;
             }
 
-            protected override IQueryable<SampleItem> Dataset => _context.Set<SampleItem>();
+            protected override IQueryable<T> Dataset => _context.Set<T>();
+        }
+
+
+        public class FetchDataHandlerSampleItem : DbContextHandler<SampleItem>
+        {
+            public FetchDataHandlerSampleItem(ApiContext context) : base(context)
+            {
+            }
+
         }
 
         public abstract class FetchDataHandler<T> : IAsyncRequestHandler<FetchDataQuery<T>, FetchDataResult<T>> where T : class
