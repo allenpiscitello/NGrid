@@ -9,7 +9,7 @@
     using Infrastructure;
     using MediatR;
     using Microsoft.EntityFrameworkCore;
-
+    
     public class FetchData
     {
         public class SortOption
@@ -76,7 +76,7 @@
             {
                 IQueryable<T> data = Dataset;
 
-                var columns = typeof (T).GetProperties().Select(x => new Column {Name = x.Name}).ToArray();
+                var columns = typeof (T).GetProperties().Where(x => x.GetCustomAttribute<GridAttributes.HiddenAttribute>() == null).Select(x => new Column {Name = x.Name}).ToArray();
 
                 if (message?.SortColumns != null)
                 {
