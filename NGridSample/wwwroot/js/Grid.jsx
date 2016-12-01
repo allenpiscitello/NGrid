@@ -1,5 +1,7 @@
 ﻿var GridHeader = React.createClass({
-
+    setSort: function () {
+        this.props.toggleSort(this.props.name)
+    },
     render: function () {
         if (this.props.sorted) {
             if (this.props.sortedDesc) {
@@ -12,12 +14,11 @@
         else {
             var sortIcon = "glyphicon glyphicon-sort pull-right";
         }
-        return (<th>{this.props.name}<span className={sortIcon} aria-hidden="true" /></th>)
-}
+        return (<th>{this.props.name}<a onClick={this.setSort }><span className={sortIcon} aria-hidden="true" /></a></th>)
+    }
 });
 
 var Grid = React.createClass({
-
     getInitialState: function () {
 
         return {
@@ -27,16 +28,23 @@ var Grid = React.createClass({
         };
     },
 
-    componentDidMount: function () {
+    toggleSort: function (columnName) {
+        this.update({ sortColumns: [{ column: columnName, sortDesc: false }] });
+    },
 
-        this.serverRequest = $.post({ url: "/Home/GetData" }).success(function (result) {
+    update: function(props) {
+        this.serverRequest = $.post({ url: "/Home/GetData" }, props).success(function (result) {
             this.setState(result);
         }.bind(this));
     },
+
+    componentDidMount: function () {
+        this.update({});
+    },
     render: function () {
         var columns = this.state.columns.map(function (item, index) {
-            return (<GridHeader key={index} name={item.name} sorted={item.sorted } sortedDesc={item.sortedDesc}/>)
-        });
+            return (<GridHeader key={index} name={item.name} sorted={item.sorted} sortedDesc={item.sortedDesc} toggleSort={this.toggleSort }/>)
+        }, this);
 
         var columnData = this.state.columns;
 
