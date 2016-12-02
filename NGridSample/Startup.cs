@@ -135,8 +135,8 @@
         {
             AddItem(context, "DEF", 123);
             AddItem(context, "ABC", 456);
-            AddItem(context, "GHI", 78);
-            AddItem(context, "JKL", -123);
+            AddItem(context, "ABC", 78);
+            AddItem(context, "JKL", 123);
             context.SaveChanges();
         }
 

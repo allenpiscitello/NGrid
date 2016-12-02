@@ -1,7 +1,6 @@
 ﻿namespace NGridSample.Domain
 {
-    using Infrastructure;
-
+    using NGrid.Core;
     public class SampleItem
     {
         [GridAttributes.Hidden]

@@ -1,4 +1,4 @@
-﻿namespace NGridSample.Infrastructure
+﻿namespace NGrid.Core
 {
     using System;
 
