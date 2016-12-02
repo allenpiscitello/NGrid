@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using Domain;
-    using Features.Home;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -16,8 +15,8 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using React.AspNet;
-    using Shared;
     using Scrutor;
+    using NGrid.Core;
 
     public class Startup
     {
@@ -46,7 +45,7 @@
             services.AddScoped<MultiInstanceFactory>(p => t => p.GetRequiredServices(t));
 
             services.Scan(scan => scan
-                .FromAssembliesOf(typeof (IMediator), typeof (FetchData.FetchDataQuery<SampleItem>))
+                .FromAssembliesOf(typeof (IMediator), typeof (SampleItem))
                 .AddClasses()
                 .AsImplementedInterfaces());
 
@@ -134,8 +133,10 @@
 
         private static void AddTestData(ApiContext context)
         {
-            AddItem(context, "ABC", 123);
-            AddItem(context, "DEF", 456);
+            AddItem(context, "DEF", 123);
+            AddItem(context, "ABC", 456);
+            AddItem(context, "GHI", 78);
+            AddItem(context, "JKL", -123);
             context.SaveChanges();
         }
 

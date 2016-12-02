@@ -27,7 +27,8 @@
     "Microsoft.EntityFrameworkCore": "1.0.0",
     "Microsoft.EntityFrameworkCore.InMemory": "1.0.0",
     "MediatR": "2.1.0",
-    "Scrutor": "1.10.0"
+    "Scrutor": "1.10.0",
+    "NGrid": "1.0.0-*"
   },
 
   "tools": {

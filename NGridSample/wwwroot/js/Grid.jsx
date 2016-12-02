@@ -14,7 +14,7 @@
         else {
             var sortIcon = "glyphicon glyphicon-sort pull-right";
         }
-        return (<th>{this.props.name}<a onClick={this.setSort }><span className={sortIcon} aria-hidden="true" /></a></th>)
+        return (<th>{this.props.name}<a href="#" onClick={this.setSort }><span className={sortIcon} aria-hidden="true" /></a></th>)
     }
 });
 
@@ -29,7 +29,27 @@ var Grid = React.createClass({
     },
 
     toggleSort: function (columnName) {
-        this.update({ sortColumns: [{ column: columnName, sortDesc: false }] });
+        var sortColumns = this.state.sortColumns;
+
+        var column = sortColumns.find(function (item) {
+            return (item.column === columnName)
+        });
+
+        if (column === undefined) {
+            sortColumns.push({ column: columnName, sortDesc: false });
+        }
+        else {
+            if (column.sortDesc) {
+                var index = sortColumns.indexOf(column);
+                sortColumns.splice(index, 1);
+            }
+            else if (!column.sortDesc) {
+                column.sortDesc = true;
+                column.sort = true;
+            }
+        }
+
+        this.update({ sortColumns: sortColumns });
     },
 
     update: function(props) {

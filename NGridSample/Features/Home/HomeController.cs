@@ -4,6 +4,7 @@
     using Domain;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using NGrid.Core;
 
     public class HomeController : Controller
     {
@@ -20,7 +21,7 @@
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetData(FetchData.FetchDataQuery<SampleItem> query)
+        public async Task<JsonResult> GetData(FetchDataQuery<SampleItem> query)
         {
             var result = await _mediator.SendAsync(query);
             return Json(result);
