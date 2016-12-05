@@ -21,7 +21,7 @@
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetData(FetchDataQuery<SampleItem> query)
+        public async Task<JsonResult> GetData(FetchDataQuery<SampleItem, SampleItemViewModel> query)
         {
             var result = await _mediator.SendAsync(query);
             return Json(result);

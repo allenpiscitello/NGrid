@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Domain;
+    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -16,7 +16,6 @@
     using Microsoft.EntityFrameworkCore;
     using React.AspNet;
     using Scrutor;
-    using NGrid.Core;
 
     public class Startup
     {
@@ -45,7 +44,7 @@
             services.AddScoped<MultiInstanceFactory>(p => t => p.GetRequiredServices(t));
 
             services.Scan(scan => scan
-                .FromAssembliesOf(typeof (IMediator), typeof (SampleItem))
+                .FromAssembliesOf(typeof (IMediator), typeof (Startup))
                 .AddClasses()
                 .AsImplementedInterfaces());
 
@@ -56,6 +55,8 @@
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddReact();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase());
 
@@ -116,11 +117,11 @@
                 //    .SetLoadBabel(false)
                 //    .AddScriptWithoutTransform("~/Scripts/bundle.server.js");
             });
-            
+
             app.UseStaticFiles();
 
             var context = app.ApplicationServices.GetService<ApiContext>();
-            AddTestData(context);
+            SampleData.AddTestData(context);
 
 
             app.UseMvc(routes =>
@@ -130,26 +131,6 @@
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
-
-        private static void AddTestData(ApiContext context)
-        {
-            AddItem(context, "DEF", 123);
-            AddItem(context, "ABC", 456);
-            AddItem(context, "ABC", 78);
-            AddItem(context, "JKL", 123);
-            context.SaveChanges();
-        }
-
-        private static void AddItem(ApiContext context, string column1, int column2)
-        {
-            var testItem = new SampleItem
-            {
-                Column1 = column1,
-                Column2 = column2
-            };
-
-            context.Set<SampleItem>().Add(testItem);
-        }
     }
 
     public static class MediatRExtensions
@@ -158,8 +139,6 @@
         {
             return (IEnumerable<object>)provider.GetRequiredService(typeof(IEnumerable<>).MakeGenericType(serviceType));
         }
-
-
     }
 
 }

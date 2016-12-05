@@ -70,7 +70,7 @@ var Grid = React.createClass({
 
         var rows = this.state.data.map(function (item, index) {
             var cols = columnData.map(function (col, index) {
-                return (<td key={index}>{item[col.name.toLowerCase()]}</td>)
+                return (<td key={index}>{item[col.name.toLowerCase()].toString()}</td>)
             });
             return (<tr key={index}>{cols}</tr>)
         });

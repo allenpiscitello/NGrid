@@ -6,9 +6,10 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Reflection;
+    using AutoMapper;
     using Microsoft.EntityFrameworkCore;
 
-    public abstract class FetchDataHandler<T> : IAsyncRequestHandler<FetchDataQuery<T>, FetchDataResult<T>> where T : class
+    public abstract class FetchDataHandler<T, U> : IAsyncRequestHandler<FetchDataQuery<T, U>, FetchDataResult<U>> where T : class
     {
 
         protected abstract IQueryable<T> Dataset { get; }
@@ -22,7 +23,7 @@
             return exp;
         }
 
-        public async Task<FetchDataResult<T>> Handle(FetchDataQuery<T> message)
+        public async Task<FetchDataResult<U>> Handle(FetchDataQuery<T, U> message)
         {
             IQueryable<T> data = Dataset;
 
@@ -52,10 +53,10 @@
                 }
             }
 
-            return new FetchDataResult<T>
+            return new FetchDataResult<U>
             {
                 Columns = columns,
-                Data = await data.ToArrayAsync()
+                Data = Mapper.Map<U[]>(await data.ToArrayAsync())
             };
         }
     }

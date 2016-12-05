@@ -3,8 +3,7 @@
     using Microsoft.EntityFrameworkCore;
     using System.Linq;
 
-
-    public abstract class DbContextHandler<T> : FetchDataHandler<T> where T : class
+    public abstract class DbContextHandler<T, U> : FetchDataHandler<T, U> where T : class
     {
         private readonly DbContext _context;
 
