@@ -7,9 +7,11 @@
     using System.Threading.Tasks;
     using System.Reflection;
     using AutoMapper;
+    using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
 
-    public abstract class FetchDataHandler<T, U> : IAsyncRequestHandler<FetchDataQuery<T, U>, FetchDataResult<U>> where T : class
+    public abstract class FetchDataHandler<T, U> : IAsyncRequestHandler<FetchDataQuery<T, U>, FetchDataResult<U>>
+        where T : class
     {
 
         protected abstract IQueryable<T> Dataset { get; }
@@ -27,7 +29,11 @@
         {
             IQueryable<T> data = Dataset;
 
-            var columns = typeof(T).GetProperties().Where(x => x.GetCustomAttribute<GridAttributes.HiddenAttribute>() == null).Select(x => new GridColumn { Name = x.Name }).ToArray();
+            var columns =
+                typeof (U).GetProperties()
+                    .Where(x => x.GetCustomAttribute<GridAttributes.HiddenAttribute>() == null)
+                    .Select(x => new GridColumn {Name = x.Name.ToLowerCamelCase()})
+                    .ToArray();
 
             if (message?.SortColumns != null)
             {
@@ -36,7 +42,7 @@
                 {
                     var column = columns.Single(x => x.Name == sortColumn.Column);
                     column.Sorted = true;
-                    var columnExpr = GetPropertySelector(column.Name);
+                    var columnExpr = GetPropertySelector(column.Name.ToUpperCamelCase());
                     column.SortedDesc = sortColumn.SortDesc;
                     if (first)
                     {
@@ -52,13 +58,28 @@
                     }
                 }
             }
-
+            
             return new FetchDataResult<U>
             {
                 Columns = columns,
                 Data = Mapper.Map<U[]>(await data.ToArrayAsync())
             };
         }
+
     }
 
+    public static class StringConversions
+    {
+        public static string ToLowerCamelCase(this string val)
+        {
+            var returnVal = char.ToLowerInvariant(val.First()) + val.Substring(1);
+            return returnVal;
+        }
+
+        public static string ToUpperCamelCase(this string val)
+        {
+            var returnVal = char.ToUpperInvariant(val.First()) + val.Substring(1);
+            return returnVal;
+        }
+    }
 }

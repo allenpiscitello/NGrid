@@ -34,9 +34,9 @@ var Grid = React.createClass({
         var column = sortColumns.find(function (item) {
             return (item.column === columnName)
         });
-
+        
         if (column === undefined) {
-            sortColumns.push({ column: columnName, sortDesc: false });
+            sortColumns = [{ column: columnName, sortDesc: false }];
         }
         else {
             if (column.sortDesc) {
@@ -70,7 +70,10 @@ var Grid = React.createClass({
 
         var rows = this.state.data.map(function (item, index) {
             var cols = columnData.map(function (col, index) {
-                return (<td key={index}>{item[col.name.toLowerCase()].toString()}</td>)
+                var value = item[col.name];
+                if (value === null || value === undefined)
+                    value = "";
+                return (<td key={index}>{value.toString()}</td>)
             });
             return (<tr key={index}>{cols}</tr>)
         });

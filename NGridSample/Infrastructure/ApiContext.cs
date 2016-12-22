@@ -11,5 +11,6 @@
         }
 
         public DbSet<SampleItem> Items { get; set; }
+        public DbSet<ChildEntity> Children { get; set; }
     }
 }
