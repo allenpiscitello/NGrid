@@ -12,9 +12,12 @@
             _context = context;
         }
 
-        protected override IQueryable<T> Dataset => DbSet;
-
-        protected virtual DbSet<T> DbSet => _context.Set<T>();
+        protected override IQueryable<T> Dataset => AddIncludes(_context.Set<T>());
+        
+        protected virtual IQueryable<T> AddIncludes(DbSet<T> dbset)
+        {
+            return dbset;
+        }
     }
 
 }

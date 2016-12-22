@@ -27,22 +27,13 @@
             public FetchDataHandlerSampleItem(ApiContext context) : base(context)
             {
             }
-            
-            protected override Expression<Func<SampleItem, object>> GetPropertySelector(string propertyName)
+
+            protected override IQueryable<SampleItem> AddIncludes(DbSet<SampleItem> dbSet)
             {
-                if (propertyName == "ChildEntityName")
-                {
-                    Expression<Func<SampleItem, object>> exp = x => x.ChildEntity.Name;
-                    return exp;
-                }
-                return base.GetPropertySelector(propertyName);
-
+                return dbSet.Include(x => x.ChildEntity);
             }
 
-            protected override IQueryable<SampleItem> Dataset {
-                get { return base.DbSet.Include(x => x.ChildEntity); }
-            }
+
+        }
     }
-
-       }
 }

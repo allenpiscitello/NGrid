@@ -14,7 +14,7 @@
         else {
             var sortIcon = "glyphicon glyphicon-sort pull-right";
         }
-        return (<th>{this.props.name}<a href="#" onClick={this.setSort }><span className={sortIcon} aria-hidden="true" /></a></th>)
+        return (<th>{this.props.name}<a href="#" onClick={this.setSort}><span className={sortIcon} aria-hidden="true" /></a></th>)
     }
 });
 

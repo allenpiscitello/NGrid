@@ -15,7 +15,7 @@
 
         protected abstract IQueryable<T> Dataset { get; }
 
-        protected virtual Expression<Func<T, object>> GetPropertySelector(string propertyName)
+        private Expression<Func<T, object>> GetPropertySelector(string propertyName)
         {
             var arg = Expression.Parameter(typeof (T), "x");
             var property = Expression.Property(arg, propertyName);
@@ -71,7 +71,8 @@
             return new FetchDataResult<U>
             {
                 Columns = columns,
-                Data = Mapper.Map<U[]>(await data.ToArrayAsync())
+                Data = Mapper.Map<U[]>(await data.ToArrayAsync()),
+                SortColumns = message?.SortColumns ?? new SortOption[0]
             };
         }
 
