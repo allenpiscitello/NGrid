@@ -9,9 +9,7 @@ namespace NGridSample.Features.Home
         public MappingProfile()
         {
             CreateMap<SampleItem, SampleItemViewModel>()
-                .ForMember(x => x.Column3, opt => opt.MapFrom(x => x.Column3 ? "On" : "Off"))
-                .ReverseMap()
-                .ForMember(x => x.Column3, opt => opt.MapFrom(x => x.Column3 == "On"));
+                .ForMember(x => x.Column3, opt => opt.MapFrom(x => x.Column3 ? "On" : "Off"));
         }
     }
 }
