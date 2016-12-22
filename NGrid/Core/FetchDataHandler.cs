@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
     using System.Reflection;
     using AutoMapper;
-    using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
 
     public abstract class FetchDataHandler<T, U> : IAsyncRequestHandler<FetchDataQuery<T, U>, FetchDataResult<U>>
@@ -42,7 +41,17 @@
                 {
                     var column = columns.Single(x => x.Name == sortColumn.Column);
                     column.Sorted = true;
-                    var columnExpr = GetPropertySelector(column.Name.ToUpperCamelCase());
+                    var propertyName = column.Name.ToUpperCamelCase();
+                    var mappingAttribute =
+                        typeof (U)
+                            .GetProperties()
+                            .First(x => x.Name == propertyName)
+                            .GetCustomAttribute<GridAttributes.PropertyMappingAttribute>();
+                    Expression<Func<T, object>> columnExpr;
+                    if (mappingAttribute != null)
+                        columnExpr = mappingAttribute.GetExpression<T>();
+                    else
+                        columnExpr = GetPropertySelector(propertyName);
                     column.SortedDesc = sortColumn.SortDesc;
                     if (first)
                     {

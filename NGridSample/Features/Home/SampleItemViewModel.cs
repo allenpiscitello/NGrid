@@ -9,7 +9,7 @@
         public string Column1 { get; set; }
         public int Column2 { get; set; }
         public string Column3 { get; set; }
-
+        [GridAttributes.PropertyMapping(typeof(FetchData.ChildEntityNameMapper))]
         public string ChildEntityName { get; set; }
     }
 }
