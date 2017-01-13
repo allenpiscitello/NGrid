@@ -1,15 +1,23 @@
-﻿
-namespace NGridSample.Features.Home
+﻿namespace NGridSample.Features.Home
 {
+    using System;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
     using AutoMapper;
     using Domain;
+    using NGrid.Core;
 
     public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            CreateMap<SampleItem, SampleItemViewModel>()
-                .ForMember(x => x.Column3, opt => opt.MapFrom(new FetchData.BooleanMapper().GetQueryExpression()));
+            var map =
+                CreateMap<SampleItem, SampleItemViewModel>();
+            map.ApplyGridMap();
+
         }
+
+      
     }
 }
