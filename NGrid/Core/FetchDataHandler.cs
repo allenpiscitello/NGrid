@@ -53,7 +53,6 @@
             foreach (var sortColumn in message.SortColumns)
             {
                 var column = columns.Single(x => x.Name == sortColumn.Column);
-                column.Sorted = true;
 
                 var columnExpr = GetColumnExpression(column, sortColumn);
                 data = DoSort(data, first, sortColumn, columnExpr);
@@ -69,7 +68,6 @@
                 GetPropertyMappingAttribute(propertyName);
 
             var columnExpr = GetQueryExpressionForColumn(mappingAttribute, propertyName);
-            column.SortedDesc = sortColumn.SortDesc;
             return columnExpr;
         }
 

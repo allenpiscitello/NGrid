@@ -21,6 +21,16 @@
             }
         }
 
+        public class BooleanMapper : IPropertyMapper<SampleItem>
+        {
+            public Expression<Func<SampleItem, object>> GetQueryExpression()
+            {
+
+                Expression<Func<SampleItem, object>> exp = x => x.Column3 ? "B" : "A";
+                return exp;
+            }
+        }
+
 
         public class FetchDataHandlerSampleItem : DbContextHandler<SampleItem, SampleItemViewModel>
         {

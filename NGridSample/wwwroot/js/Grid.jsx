@@ -1,6 +1,6 @@
 ﻿var GridHeader = React.createClass({
-    setSort: function () {
-        this.props.toggleSort(this.props.name)
+    setSort: function (e) {
+        this.props.toggleSort(this.props.name, e.shiftKey)
     },
     render: function () {
         if (this.props.sorted) {
@@ -14,7 +14,8 @@
         else {
             var sortIcon = "glyphicon glyphicon-sort pull-right";
         }
-        return (<th>{this.props.name}<a href="#" onClick={this.setSort}><span className={sortIcon} aria-hidden="true" /></a></th>)
+        var style = {cursor: "pointer"}
+        return (<th><div onClick={this.setSort} style={style}>{this.props.name}<span className={sortIcon} aria-hidden="true" /></div></th>)
     }
 });
 
@@ -28,7 +29,7 @@ var Grid = React.createClass({
         };
     },
 
-    toggleSort: function (columnName) {
+    toggleSort: function (columnName, append) {
         var sortColumns = this.state.sortColumns;
 
         var column = sortColumns.find(function (item) {
@@ -36,16 +37,18 @@ var Grid = React.createClass({
         });
         
         if (column === undefined) {
-            sortColumns = [{ column: columnName, sortDesc: false }];
+            var newColumn = { column: columnName, sortDesc: false };
+            if (!append) {
+                sortColumns = [newColumn];
+            }
+            else {
+                sortColumns.push(newColumn);
+            }
         }
         else {
-            if (column.sortDesc) {
-                var index = sortColumns.indexOf(column);
-                sortColumns.splice(index, 1);
-            }
-            else if (!column.sortDesc) {
-                column.sortDesc = true;
-                column.sort = true;
+            column.sortDesc = !column.sortDesc;
+            if (!append) {
+                sortColumns = [column];
             }
         }
 
@@ -63,7 +66,14 @@ var Grid = React.createClass({
     },
     render: function () {
         var columns = this.state.columns.map(function (item, index) {
-            return (<GridHeader key={index} name={item.name} sorted={item.sorted} sortedDesc={item.sortedDesc} toggleSort={this.toggleSort }/>)
+
+            var column = this.state.sortColumns.find(function (sortCol) {
+                return (sortCol.column === item.name)
+            });
+
+            var sorted = column !== undefined;
+            var sortedDesc = column !== undefined && column.sortDesc;
+            return (<GridHeader key={index} name={item.name} sorted={sorted} sortedDesc={sortedDesc} toggleSort={this.toggleSort }/>)
         }, this);
 
         var columnData = this.state.columns;
