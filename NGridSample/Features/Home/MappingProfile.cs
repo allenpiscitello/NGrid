@@ -13,9 +13,7 @@
         public MappingProfile()
         {
             var map =
-                CreateMap<SampleItem, SampleItemViewModel>();
-            map.ApplyGridMap();
-
+                CreateMap<SampleItem, SampleItemViewModel>().ApplyGridMap();
         }
 
       
