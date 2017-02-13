@@ -27,5 +27,18 @@
             }
         }
 
+        public class DefaultSortAttribute : Attribute
+        {
+            public int Order { get; }
+            public bool SortDescending { get; }
+
+            public DefaultSortAttribute(int order, bool sortDescending)
+            {
+                Order = order;
+                SortDescending = sortDescending;
+            }
+        }
+
+
     }
 }
